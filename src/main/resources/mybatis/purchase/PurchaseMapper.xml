@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.purchase.mapper.PurchaseMapper">
+
+	<resultMap type="BasePurchase" id="PurchaseResult">
+		<id     property="id"        	column="id"         />
+		<result property="name"        	column="name"         />
+		<result property="telephone"    column="telephone"      />
+		<result property="useFlag"      column="use_flag"       />
+		<result property="createUserId" column="create_user_id"       />
+		<result property="createTime"   column="create_time"           />
+		<result property="updateUserId" column="update_user_id"     />
+		<result property="updateTime"   column="update_time"             />
+		<result property="remark"       column="remark"          />		
+	</resultMap>
+	
+	<sql id="selectPurchaseSql">
+        select p.id, p.name, p.telephone, p.use_flag, p.create_user_id, p.create_time, p.update_user_id, p.update_time, p.remark 
+        from basic_purchase p
+    </sql>
+    
+	<select id="selectPurchaseList" resultMap="PurchaseResult">
+		<include refid="selectPurchaseSql"/>
+		ORDER BY id ASC
+		LIMIT #{offset}, #{pageSize}
+	</select>
+		
+	<select id="selectPurchaseById" parameterType="Long" resultMap="PurchaseResult">
+		<include refid="selectPurchaseSql"/>
+		where p.id = #{id}
+	</select>
+ 	
+ 	<insert id="insertPurchase" parameterType="BasePurchase" useGeneratedKeys="true" keyProperty="id">
+ 		insert into basic_purchase(
+ 			<if test="id != null and id != 0">id,</if>
+ 			<if test="name != null and name != ''">name,</if>
+ 			<if test="telephone != null">telephone,</if>
+ 			<if test="useFlag != null">use_flag,</if>
+ 			<if test="createUserId != null">create_user_id,</if>
+ 			<if test="updateUserId != null">update_user_id,</if>
+ 			<if test="remark != null">remark,</if>
+ 			update_time,
+ 			create_time
+ 		)values(
+ 			<if test="id != null and id != 0">#{id},</if>
+ 			<if test="name != null and name != ''">#{name},</if>
+ 			<if test="telephone != null">#{telephone},</if>
+ 			<if test="useFlag != null">#{useFlag},</if>
+ 			<if test="createUserId != null">#{createUserId},</if>
+ 			<if test="updateUserId != null">#{updateUserId},</if>
+ 			<if test="remark != null">#{remark},</if>
+ 			sysdate(),
+ 			sysdate()
+ 		)
+	</insert>
+	
+ 	<update id="updatePurchase" parameterType="BasePurchase">
+ 		update basic_purchase
+ 		<set>
+ 			<if test="name != null and name != ''">name = #{name},</if>
+ 			<if test="telephone != null">telephone = #{telephone},</if>
+ 			<if test="useFlag != null">use_flag = #{useFlag},</if>
+ 			<if test="createUserId != null">create_user_id = #{createUserId},</if>
+ 			<if test="updateUserId != null">update_user_id = #{updateUserId},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where id = #{id}
+	</update>
+</mapper>
