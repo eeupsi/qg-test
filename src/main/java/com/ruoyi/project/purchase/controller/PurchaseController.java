@@ -30,7 +30,6 @@ public class PurchaseController {
 	@GetMapping(value={"/list", "/list/{pageIndex}"})
 	public ApiResult<List<BasePurchase>> purchaseList(@PathVariable(required=false) Integer pageIndex, @RequestParam(required = false, defaultValue="15") Integer pageSize) {
 		if(pageIndex==null) pageIndex=1;
-		System.out.println("Check param:"+pageIndex+", "+pageSize);
 		List<BasePurchase> rs = purchaseService.findPurchases(pageIndex, pageSize);
 		return ApiResult.success(rs);
 	}

@@ -15,25 +15,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateTime"   column="update_time"             />
 		<result property="remark"       column="remark"          />		
 	</resultMap>
-	
+	<!-- 单记录查询 -->
 	<sql id="selectPurchaseSql">
-        select p.id, p.name, p.telephone, p.use_flag, p.create_user_id, p.create_time, p.update_user_id, p.update_time, p.remark 
-        from basic_purchase p
+        SELECT p.id, p.name, p.telephone, p.use_flag, p.create_user_id, p.create_time, p.update_user_id, p.update_time, p.remark 
+        FROM basic_purchase p
     </sql>
     
-	<select id="selectPurchaseList" resultMap="PurchaseResult">
+	<!-- 分页优化查询 -->
+	<sql id="performQuery">
+        SELECT p.id, p.name, p.telephone, p.use_flag, p.create_user_id, p.create_time, p.update_user_id, p.update_time, p.remark 
+        FROM basic_purchase p
+        INNER JOIN(SELECT id FROM basic_purchase ORDER BY id ASC LIMIT #{offset}, #{pageSize}) p0
+        ON p.id = p0.id
+    </sql>
+    
+	<select id="selectPurchaseList0" resultMap="PurchaseResult">
 		<include refid="selectPurchaseSql"/>
-		ORDER BY id ASC
-		LIMIT #{offset}, #{pageSize}
+		ORDER BY id ASC LIMIT #{offset}, #{pageSize}
+	</select>
+    
+	<select id="selectPurchaseList" resultMap="PurchaseResult">
+		<include refid="performQuery"/>
 	</select>
 		
 	<select id="selectPurchaseById" parameterType="Long" resultMap="PurchaseResult">
 		<include refid="selectPurchaseSql"/>
-		where p.id = #{id}
+		WHERE p.id = #{id}
 	</select>
  	
  	<insert id="insertPurchase" parameterType="BasePurchase" useGeneratedKeys="true" keyProperty="id">
- 		insert into basic_purchase(
+ 		INSERT INTO basic_purchase(
  			<if test="id != null and id != 0">id,</if>
  			<if test="name != null and name != ''">name,</if>
  			<if test="telephone != null">telephone,</if>
@@ -57,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
  	<update id="updatePurchase" parameterType="BasePurchase">
- 		update basic_purchase
+ 		UPDATE basic_purchase
  		<set>
  			<if test="name != null and name != ''">name = #{name},</if>
  			<if test="telephone != null">telephone = #{telephone},</if>
@@ -67,6 +78,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="remark != null">remark = #{remark},</if>
  			update_time = sysdate()
  		</set>
- 		where id = #{id}
+ 		WHERE id = #{id}
 	</update>
 </mapper>
