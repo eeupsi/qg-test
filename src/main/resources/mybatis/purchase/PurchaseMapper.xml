@@ -29,11 +29,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.id = p0.id
     </sql>
     
-	<select id="selectPurchaseList0" resultMap="PurchaseResult">
-		<include refid="selectPurchaseSql"/>
-		ORDER BY id ASC LIMIT #{offset}, #{pageSize}
-	</select>
-    
 	<select id="selectPurchaseList" resultMap="PurchaseResult">
 		<include refid="performQuery"/>
 	</select>
